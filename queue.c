@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,8 +13,13 @@
 queue_t *q_new()
 {
     queue_t *q = malloc(sizeof(queue_t));
-    /* TODO: What if malloc returned NULL? */
+    if (!q) {
+        return NULL;
+    }
+
     q->head = NULL;
+    q->tail = NULL;
+    q->size = 0;
     return q;
 }
 
@@ -61,6 +67,12 @@ bool q_insert_head(queue_t *q, char *s)
     newh->next = q->head;
     newh->value = new_s;
     q->head = newh;
+
+    if (!q->tail) {
+        q->tail = newh;
+    }
+
+    q->size++;
     return true;
 }
 
@@ -76,7 +88,43 @@ bool q_insert_tail(queue_t *q, char *s)
     /* TODO: You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
     /* TODO: Remove the above comment when you are about to implement. */
-    return false;
+    list_ele_t *newt;
+    char *new_s;
+    size_t len;
+
+    if (!q) {
+        return false;
+    }
+
+    newt = malloc(sizeof(list_ele_t));
+    if (!newt) {
+        return false;
+    }
+
+    len = strlen(s);
+    new_s = malloc(len + 1);
+    if (!new_s) {
+        free(newt);
+        return false;
+    }
+
+    strncpy(new_s, s, len);
+    new_s[len] = '\0';
+
+    newt->next = NULL;
+    newt->value = new_s;
+
+    if (q->tail) {
+        /* When queue is not empty */
+        q->tail->next = newt;
+    } else {
+        /* When queue is empty */
+        q->head = newt;
+    }
+
+    q->tail = newt;
+    q->size++;
+    return true;
 }
 
 /*
@@ -113,10 +161,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
  */
 int q_size(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* Remember: It should operate in O(1) time */
-    /* TODO: Remove the above comment when you are about to implement. */
-    return q->size;
+    return q ? q->size : 0;
 }
 
 /*
@@ -128,8 +173,24 @@ int q_size(queue_t *q)
  */
 void q_reverse(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* TODO: Remove the above comment when you are about to implement. */
+    list_ele_t *cur, *prev, *next;
+
+    if (!q) {
+        return;
+    }
+
+    q->tail = q->head;
+
+    prev = NULL;
+    cur = q->head;
+    while (cur) {
+        next = cur->next;
+        cur->next = prev;
+        prev = cur;
+        cur = next;
+    }
+
+    q->head = prev;
 }
 
 /*
