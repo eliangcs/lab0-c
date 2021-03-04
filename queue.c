@@ -6,6 +6,13 @@
 #include "harness.h"
 #include "queue.h"
 
+#define MAXSTRING 1024
+
+typedef struct {
+    list_ele_t *head;
+    list_ele_t *tail;
+} list_ele_pair_t;
+
 /*
  * Create empty queue.
  * Return NULL if could not allocate space.
@@ -26,8 +33,21 @@ queue_t *q_new()
 /* Free all storage used by queue */
 void q_free(queue_t *q)
 {
-    /* TODO: How about freeing the list elements and the strings? */
-    /* Free queue structure */
+    list_ele_t *cur, *next;
+
+    if (!q) {
+        return;
+    }
+
+    cur = q->head;
+
+    while (cur) {
+        next = cur->next;
+        free(cur->value);
+        free(cur);
+        cur = next;
+    }
+
     free(q);
 }
 
@@ -85,9 +105,6 @@ bool q_insert_head(queue_t *q, char *s)
  */
 bool q_insert_tail(queue_t *q, char *s)
 {
-    /* TODO: You need to write the complete code for this function */
-    /* Remember: It should operate in O(1) time */
-    /* TODO: Remove the above comment when you are about to implement. */
     list_ele_t *newt;
     char *new_s;
     size_t len;
@@ -212,7 +229,7 @@ static list_ele_t *merge(list_ele_t *a, list_ele_t *b)
             break;
         }
 
-        if (strncmp(a->value, b->value, 200) < 0) {
+        if (strncmp(a->value, b->value, MAXSTRING) < 0) {
             t->next = a;
             t = a;
             a = a->next;
@@ -260,5 +277,14 @@ static list_ele_t *merge_sort(list_ele_t *head)
  */
 void q_sort(queue_t *q)
 {
+    if (!q) {
+        return;
+    }
+
     q->head = merge_sort(q->head);
+
+    q->tail = q->head;
+    while (q->tail && q->tail->next) {
+        q->tail = q->tail->next;
+    }
 }
