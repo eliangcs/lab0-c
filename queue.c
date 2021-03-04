@@ -8,11 +8,6 @@
 
 #define MAXSTRING 1024
 
-typedef struct {
-    list_ele_t *head;
-    list_ele_t *tail;
-} list_ele_pair_t;
-
 /*
  * Create empty queue.
  * Return NULL if could not allocate space.
