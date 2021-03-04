@@ -152,6 +152,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     free(orig_head->value);
     free(orig_head);
 
+    q->size--;
     return true;
 }
 
