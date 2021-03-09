@@ -101,11 +101,10 @@ void init_cmd()
     add_cmd("log", do_log_cmd, " file           | Copy output to file");
     add_cmd("time", do_time_cmd, " cmd arg ...    | Time command execution");
     add_cmd("#", do_comment_cmd, " ...            | Display comment");
-    add_param("simulation", (int *) &simulation, "Start/Stop simulation mode",
-              NULL);
+    add_param("simulation", &simulation, "Start/Stop simulation mode", NULL);
     add_param("verbose", &verblevel, "Verbosity level", NULL);
     add_param("error", &err_limit, "Number of errors until exit", NULL);
-    add_param("echo", (int *) &echo, "Do/don't echo commands", NULL);
+    add_param("echo", &echo, "Do/don't echo commands", NULL);
 
     init_in();
     init_time(&last_time);
